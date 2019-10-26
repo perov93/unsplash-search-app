@@ -3,7 +3,7 @@ const form = document.querySelector('form');
 const input = document.querySelector('input');
 const imageSection = document.querySelector('.images');
 let page = 1;
-const API_URL = `https://api.unsplash.com/search/photos?page=${page}&per_page=3&client_id=${API_CLIENTID}`
+const API_URL = `https://api.unsplash.com/search/photos?page=${page}&per_page=9&client_id=${API_CLIENTID}`
 
 
 form.addEventListener('submit', formSubmitted);
@@ -16,16 +16,16 @@ function formSubmitted(event) {
   search(searchTerm)
     .then(displayImages)
 
-    var xmlhttp = new XMLHttpRequest();
-xmlhttp.onreadystatechange = function() {
-  if (this.readyState == 4 && this.status == 200) {
-    var myObj = JSON.parse(this.responseText);
-    document.getElementById("totalPages").innerHTML = 'Total Pages: ' + myObj.total_pages;
-  }
-};
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      var myObj = JSON.parse(this.responseText);
+      document.getElementById("totalPages").innerHTML = 'Total Pages: ' + myObj.total_pages;
+    }
+  };
 
-xmlhttp.open("GET", `${API_URL}&query=${searchTerm}`, true);
-xmlhttp.send();
+  xmlhttp.open("GET", `${API_URL}&query=${searchTerm}`, true);
+  xmlhttp.send();
 }
 
 function searchStart() {
@@ -53,14 +53,14 @@ function nextPage(event) {
   searchStart();
   next(searchTerm)
     .then(displayImages);
-    page++;
-    console.log(page);
-    
+  page++;
+  console.log(page);
+  document.getElementById("currentPage").innerHTML = '| Current Page: ' + page;
 
 }
 
 function next(searchTerm) {
-  let url = `https://api.unsplash.com/search/photos?page=${page + 1}&per_page=3&client_id=${API_CLIENTID}&query=${searchTerm}`
+  let url = `https://api.unsplash.com/search/photos?page=${page + 1}&per_page=9&client_id=${API_CLIENTID}&query=${searchTerm}`
   console.log(url)
   return fetch(url)
     .then(response => response.json())
@@ -79,17 +79,22 @@ function prevPage(event) {
   searchStart();
   prev(searchTerm)
     .then(displayImages);
-    page--;
-    console.log(page);
+  page--;
+  console.log(page);
 
-    if(page == 0){
-      $('#previous').attr('disabled','disabled');
-    }
-    
+
+
+  if (page == 0) {
+    $('#previous').attr('disabled', 'disabled');
+    document.getElementById("currentPage").innerHTML = ' ';
+  } else {
+    document.getElementById("currentPage").innerHTML = ' | Current Page: ' + page;
+  }
+
 }
 
 function prev(searchTerm) {
-  let url = `https://api.unsplash.com/search/photos?page=${page - 1}&per_page=3&client_id=${API_CLIENTID}&query=${searchTerm}`
+  let url = `https://api.unsplash.com/search/photos?page=${page - 1}&per_page=9&client_id=${API_CLIENTID}&query=${searchTerm}`
   console.log(url)
   return fetch(url)
     .then(response => response.json())
@@ -101,13 +106,16 @@ function prev(searchTerm) {
 
 
 
-
+//Display images
 function displayImages(images) {
   images.forEach(image => {
     let imageContainer = document.createElement('div');
     imageContainer.className = 'ImageResult'
-    imageContainer.innerHTML = `<img src="${image.urls.regular}">`;
+    imageContainer.innerHTML = `<img src="${image.urls.regular}">
+    <a href='${image.links.html}' target="_blank" class="view_link">View on Unsplash</a>
+    <a href="${image.user.name}" target="_blank" class="user_link">Photo by: ${image.user.name}</a>`;
     imageSection.appendChild(imageContainer);
+    console.log(`${image.user.name}`);
 
   });
 }
@@ -129,4 +137,3 @@ function displayImages(images) {
 
 //   });
 // }
-
