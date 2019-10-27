@@ -11,10 +11,11 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     </head>
     <body>
-        <h1>Unsplash Search</h1>
+        <h1>Unsplash Search from API</h1>
         <form>
             <label for="searchTerm">Image Search</label>
             <input class="searchBox" type="text" id="searchTerm" name="searchTerm"> <button type="submit">Search</button>
+            <span id="totalImages"></span>
         </form>
         <section class="images">
         </section>
@@ -24,6 +25,7 @@
             <input type="button" id="previous" value="previous" />
             <!--<input type="button" id="last" value="last" /> -->
             <span id="totalPages"></span>
+            
             <span id="currentPage"></span>
         
             <div class="row justify-content-center mt-5" id="list"></div>
